@@ -1,0 +1,4 @@
+@Configuration
+@ComponentScan("com.springbootrest.*")
+@EntityScan("com.springbootrest.model")
+@EnableJpaRepositories("com.springbootrest.*")
