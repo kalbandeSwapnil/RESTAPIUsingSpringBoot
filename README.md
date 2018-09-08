@@ -6,8 +6,9 @@ I have used Hibernate using JPA, springboot MVC framework to build this project.
 All APIs will accpet and produce application/ json only  and configured with basic authentication.
 
 # REST APIs are :
-1. TO get all users 
+1. To get all users 
    GET http://localhost:8080/springrestapp/users/getAll?page=1&pageSize=600
+   
 2. To add user :
    POST http://localhost:8080/springrestapp/users/addUser
    Request Body :
