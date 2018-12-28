@@ -1,9 +1,12 @@
 package com.springbootrest.filter;
 
 import com.springbootrest.service.AdminUserService;
+import com.springbootrest.service.AdminUserServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 import sun.misc.BASE64Decoder;
 
@@ -25,6 +28,7 @@ public class AuthenticationFilter implements Filter {
     private static final String AUTH_TYPE_BASIC = "Basic";
 
     @Autowired
+    @Qualifier("adminUserServiceImpl")
     private AdminUserService adminUserService;
 
     @Override

@@ -26,6 +26,7 @@ public class UserController {
 
     @GetMapping(value = API_GET_ALL, produces = APPLICATION_JSON)
     @ResponseBody
+    @ResponseStatus
     public Map<String, Object> getAllUsers(@RequestParam(value = PAGE, required = false) String page,
                                            @RequestParam(value = PAGE_SIZE, required = false) String size) {
 
@@ -35,6 +36,7 @@ public class UserController {
 
     @PostMapping(value = API_ADD_USER, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody
+    @ResponseStatus
     public ResponseEntity<Object> addUser(@RequestBody Map<String, String> requestBody) {
         User user = new User();
         user.setUsername( requestBody.get( USERNAME ) );
@@ -46,6 +48,7 @@ public class UserController {
 
     @DeleteMapping(value = API_DELETE_USER)
     @ResponseBody
+    @ResponseStatus
     public ResponseEntity<Object> deleteUser(@RequestParam(ID) int id) {
         boolean success = userService.delete( id );
         if (success)
@@ -56,6 +59,7 @@ public class UserController {
 
     @GetMapping(value = API_SEARCH_USER, produces = APPLICATION_JSON)
     @ResponseBody
+    @ResponseStatus
     public Map<String, Object> searchUser(@RequestParam(value = USERNAME, required = false) String username,
                                           @RequestParam(value = FIRST_NAME, required = false) String firstName,
                                           @RequestParam(value = LAST_NAME, required = false) String lastName,
@@ -94,6 +98,7 @@ public class UserController {
 
     @PostMapping(value = API_UPDATE_USER, consumes = APPLICATION_JSON)
     @ResponseBody
+    @ResponseStatus
     public ResponseEntity<Object> updateUser(@RequestBody Map<String, String> requestBody) {
 
         User user = new User();

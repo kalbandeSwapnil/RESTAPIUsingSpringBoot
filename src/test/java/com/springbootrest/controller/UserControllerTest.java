@@ -1,6 +1,10 @@
 package com.springbootrest.controller;
 
+import com.springbootrest.filter.AuthenticationFilter;
 import com.springbootrest.model.User;
+import com.springbootrest.repository.AdminUserRespository;
+import com.springbootrest.service.AdminUserService;
+import com.springbootrest.service.AdminUserServiceImpl;
 import com.springbootrest.service.UserService;
 import org.junit.After;
 import org.junit.Before;
@@ -10,18 +14,27 @@ import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +46,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = UserController.class, secure = false)
+@ContextConfiguration(classes = {AdminUserServiceImpl.class, AdminUserRespository.class,UserController.class})
 public class UserControllerTest {
 
     @Autowired
@@ -40,8 +54,13 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private AdminUserService adminUserService;
+
     @Before
     public void setUp() throws Exception {
+      Mockito.when( adminUserService.authenticateUser(Mockito.any(String.class) ,Mockito.any(String.class) ) ).thenReturn(true);
+
     }
 
     @After
@@ -115,7 +134,7 @@ public class UserControllerTest {
         Mockito.when( userService.searchUsers( "0", "testusername", "testFirstName", "testLastName", PageRequest.of( 0, 100 ) ) ).thenReturn( new PageImpl<User>( users ) );
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
-                Constants.API_USERS + Constants.API_SEARCH_USER + "?username=testusername&id=0&lastName=testLastName&firstName=testFirstName" ).accept( MediaType.APPLICATION_JSON );
+                  Constants.API_USERS + Constants.API_SEARCH_USER + "?username=testusername&id=0&lastName=testLastName&firstName=testFirstName" ).accept( MediaType.APPLICATION_JSON );
         MvcResult result = mockMvc.perform( requestBuilder ).andReturn();
         String expectedJSON = "{\"TotalCount\":1,\"pageSize\":1,\"Page Number\":0,\"Result\":[{\"id\":0,\"username\":\"testusername\",\"firstName\":\"testFirstName\",\"lastName\":\"testLastName\"}]}";
         JSONAssert.assertEquals( expectedJSON, result.getResponse()
